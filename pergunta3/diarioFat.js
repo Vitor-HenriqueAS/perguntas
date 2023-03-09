@@ -11,20 +11,21 @@
 // devem ser ignorados no cálculo da média;
 
 
-const url = 'url';
+const url = 'https://raw.githubusercontent.com/Vitor-HenriqueAS/perguntas/main/pergunta3/faturamento.json';
 
 fetch(url)
   .then(response => response.json())
   .then(json_data => {
     const faturamentoDiario = json_data.faturamentoDiario;
-    const dias = Object.keys(faturamentoDiario);
     const valores = Object.values(faturamentoDiario);
     const valoresNumeros = valores.map(Number); // converter para números
 
 		const menorFat = Math.min(...valoresNumeros);
 		const maiorFat = Math.max(...valoresNumeros);
 
-		const diasSemFat = faturamentoDiario.filter(valor => valor > 0);
+		const diasSemFat = Object.entries(faturamentoDiario)
+			.filter(([dia, valor]) => valor === undefined || valor === "0")
+			.map(([dia, valor]) => dia);
 		const mediaMensal = diasSemFat.reduce((soma, valor) => soma + valor, 0) / diasSemFat.length;
 		const diasAcimaDaMedia = diasSemFat.filter(valor => valor > mediaMensal).length;
 
