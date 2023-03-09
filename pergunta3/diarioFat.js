@@ -17,17 +17,17 @@ fetch(url)
   .then(response => response.json())
   .then(json_data => {
     const faturamentoDiario = json_data.faturamentoDiario;
-    const valores = Object.values(faturamentoDiario);
-    const valoresNumeros = valores.map(Number); // converter para números
+		const qtdDias = json_data.mes.dias;
+    const valoresNumeros = Object.values(faturamentoDiario).map(Number);
 
 		const menorFat = Math.min(...valoresNumeros);
 		const maiorFat = Math.max(...valoresNumeros);
 
-		const diasSemFat = Object.entries(faturamentoDiario)
-			.filter(([dia, valor]) => valor === undefined || valor === "0")
-			.map(([dia, valor]) => dia);
-		const mediaMensal = diasSemFat.reduce((soma, valor) => soma + valor, 0) / diasSemFat.length;
-		const diasAcimaDaMedia = diasSemFat.filter(valor => valor > mediaMensal).length;
+		const diasComFat = valoresNumeros.filter(valor => valor > 0);
+    const somaFaturamento = diasComFat.reduce((soma, valor) => soma + valor, 0);
+    const mediaMensal = somaFaturamento / diasComFat.length;
+
+		const diasAcimaDaMedia = diasComFat.filter(valor => valor > mediaMensal).length;
 
 		console.log(`Menor faturamento diário: R$ ${menorFat}`);
 		console.log(`Maior faturamento diário: R$ ${maiorFat}`);
